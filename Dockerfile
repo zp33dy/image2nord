@@ -1,6 +1,6 @@
 # Use a pre-built Docker image with cargo-chef and the Rust toolchain
 # the cargo-shef should use a Bookworm version. Alpine does not compile
-FROM lukemathwalker/cargo-chef:latest-rust-1.84-bookworm AS chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.90-bookworm AS chef
 WORKDIR /app
 
 # Prepare the build environment using cargo-chef
@@ -19,7 +19,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 RUN cargo build --release --bin midna
 RUN ls -l /app/target/release
-  
+
 # Base image for the final application
 FROM ubuntu:noble
 
@@ -35,9 +35,9 @@ COPY assets assets
 
 # Download and install ONNX Runtime binary release
 RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.8.1/onnxruntime-linux-x64-1.8.1.tgz \
-    && tar -xzf onnxruntime-linux-x64-1.8.1.tgz \
-    && mv onnxruntime-linux-x64-1.8.1 /opt/onnxruntime \
-    && ldconfig /opt/onnxruntime/lib
+  && tar -xzf onnxruntime-linux-x64-1.8.1.tgz \
+  && mv onnxruntime-linux-x64-1.8.1 /opt/onnxruntime \
+  && ldconfig /opt/onnxruntime/lib
 
 # Copy the compiled Rust binary to the final image
 COPY --from=builder /app/target/release/midna /usr/local/bin
