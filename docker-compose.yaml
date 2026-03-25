@@ -9,3 +9,5 @@ services:
       #- .:/usr/local/bin
       - ../data/models:/app/models
     command: ["image2nord"]
+    restart: "unless-stopped"
+    # platform: linux/amd64
